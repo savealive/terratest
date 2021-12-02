@@ -2,8 +2,6 @@ package helm
 
 import (
 	"encoding/json"
-	"path/filepath"
-
 	"github.com/ghodss/yaml"
 	"github.com/gruntwork-io/go-commons/errors"
 	"github.com/stretchr/testify/require"
@@ -25,10 +23,10 @@ func RenderTemplate(t testing.TestingT, options *Options, chartDir string, relea
 // the template command. If you pass in templateFiles, this will only render those templates.
 func RenderTemplateE(t testing.TestingT, options *Options, chartDir string, releaseName string, templateFiles []string, extraHelmArgs ...string) (string, error) {
 	// First, verify the charts dir exists
-	absChartDir, err := filepath.Abs(chartDir)
-	if err != nil {
-		return "", errors.WithStackTrace(err)
-	}
+	//absChartDir, err := filepath.Abs(chartDir)
+	//if err != nil {
+	//	return "", errors.WithStackTrace(err)
+	//}
 	if !files.FileExists(chartDir) {
 		return "", errors.WithStackTrace(ChartNotFoundError{chartDir})
 	}
@@ -39,16 +37,16 @@ func RenderTemplateE(t testing.TestingT, options *Options, chartDir string, rele
 	if options.KubectlOptions != nil && options.KubectlOptions.Namespace != "" {
 		args = append(args, "--namespace", options.KubectlOptions.Namespace)
 	}
-	args, err = getValuesArgsE(t, options, args...)
+	args, err := getValuesArgsE(t, options, args...)
 	if err != nil {
 		return "", err
 	}
 	for _, templateFile := range templateFiles {
-		// validate this is a valid template file
-		absTemplateFile := filepath.Join(absChartDir, templateFile)
-		if !files.FileExists(absTemplateFile) {
-			return "", errors.WithStackTrace(TemplateFileNotFoundError{Path: templateFile, ChartDir: absChartDir})
-		}
+		//// validate this is a valid template file
+		//absTemplateFile := filepath.Join(absChartDir, templateFile)
+		//if !files.FileExists(absTemplateFile) {
+		//	return "", errors.WithStackTrace(TemplateFileNotFoundError{Path: templateFile, ChartDir: absChartDir})
+		//}
 
 		// Note: we only get the abs template file path to check it actually exists, but the `helm template` command
 		// expects the relative path from the chart.
